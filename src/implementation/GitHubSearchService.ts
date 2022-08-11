@@ -1,5 +1,5 @@
-import { GithubResponse } from "../api/GithubUserResponse";
-import { Repository } from "../interfaces/Repository";
+import { GithubResponse } from "../api/GithubService";
+import { Service } from "../interfaces/Service";
 
 const fetchResponse = async (query: string, source: "users" | "repositories") => {
   try {
@@ -40,15 +40,13 @@ const getRepositories = async (query: string) => {
   }
 };
 
-export class GitHubSearchResponse implements Repository {
-  public async fetch(query: string) {
-    try {
-      const usersResponse = await getUsers(query);
-      const repositoriesResponse = await getRepositories(query);
+export const gitHubSearchService: Service = async (query: string) => {
+  try {
+    const usersResponse = await getUsers(query);
+    const repositoriesResponse = await getRepositories(query);
 
-      return [...repositoriesResponse, ...usersResponse].slice(0, 51);
-    } catch (error) {
-      throw error;
-    }
+    return [...repositoriesResponse, ...usersResponse];
+  } catch (error) {
+    throw error;
   }
-}
+};

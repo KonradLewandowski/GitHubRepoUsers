@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, ChangeEvent } from "react";
 
-import { Repository, Result } from "../../interfaces/Repository";
+import { Service, Result } from "../../interfaces/Service";
 
 import Spinner from "../spinner/spinner.component";
 import Items from "../items/items.component";
@@ -8,10 +8,10 @@ import Items from "../items/items.component";
 import { AutocompleteContainer } from "./autocomplete.styles";
 
 type Autocompleteprops = {
-  repo: Repository;
+  gitHubSearchService: Service;
 };
 
-const Autocomplete: FC<Autocompleteprops> = ({ repo }) => {
+const Autocomplete: FC<Autocompleteprops> = ({ gitHubSearchService }) => {
   const [searchField, setSearchField] = useState("");
   const [results, setResults] = useState<Result[]>([]);
   const [filteredResults, setFilteredResults] = useState(results);
@@ -21,18 +21,17 @@ const Autocomplete: FC<Autocompleteprops> = ({ repo }) => {
   const typingResult = async () => {
     try {
       setIsSearching(true);
-      const items = await repo.fetch(searchField);
+      const items = await gitHubSearchService(searchField);
       setResults(items);
       setIsError(false);
+      setIsSearching(false);
     } catch (error) {
       setIsError(true);
       setIsSearching(false);
       setTimeout(() => {
         setIsError(false);
       }, 4000);
-      throw error;
     }
-    setIsSearching(false);
   };
 
   useEffect(() => {
@@ -46,7 +45,8 @@ const Autocomplete: FC<Autocompleteprops> = ({ repo }) => {
       .sort((a, b) => a.name.localeCompare(b.name))
       .filter((newResult) => {
         return newResult.name.toLowerCase().startsWith(searchField);
-      });
+      })
+      .slice(0, 50);
 
     setFilteredResults(newFilteredResults);
   }, [results, searchField]);
@@ -57,13 +57,8 @@ const Autocomplete: FC<Autocompleteprops> = ({ repo }) => {
   };
 
   return (
-    <AutocompleteContainer>
-      <input
-        type="text"
-        onChange={onSearchChange}
-        placeholder="search"
-        data-testid="search-box"
-      />
+    <AutocompleteContainer data-testid="autocomplete-container">
+      <input type="text" onChange={onSearchChange} placeholder="search" />
       {isSearching ? <Spinner /> : null}
       <Items items={filteredResults} isError={isError} />
     </AutocompleteContainer>

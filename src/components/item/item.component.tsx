@@ -1,6 +1,6 @@
 import { KeyboardEvent } from "react";
 
-import { Result } from "../../interfaces/Repository";
+import { Result } from "../../interfaces/Service";
 
 import { ItemContainer } from "./item.styles";
 

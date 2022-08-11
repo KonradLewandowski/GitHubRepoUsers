@@ -2,12 +2,15 @@ import { SearchBoxContainer } from "./searchBox.styles";
 
 import Autocomplete from "../autocomplete/autocomplete";
 
-import { GitHubSearchResponse } from "../../implementation/GitHubSearchResponse";
+import { gitHubSearchService } from "../../implementation/GitHubSearchService";
 
 const SearchBox = () => {
   return (
     <SearchBoxContainer>
-      <Autocomplete repo={new GitHubSearchResponse()} data-testid="autocomplete-box" />
+      <Autocomplete
+        gitHubSearchService={gitHubSearchService}
+        data-testid="autocomplete-box"
+      />
     </SearchBoxContainer>
   );
 };

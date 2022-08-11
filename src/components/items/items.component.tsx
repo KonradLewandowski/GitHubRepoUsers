@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Result } from "../../interfaces/Repository";
+import { Result } from "../../interfaces/Service";
 
 import Item from "../item/item.component";
 
@@ -43,13 +43,20 @@ const Items = ({ items, isError }: { items: Result[]; isError: boolean }) => {
   return (
     <ItemsContainer>
       {isError ? (
-        <div className="error">Something went wrong!</div>
+        <div data-testid="error-message" className="error">
+          Something went wrong!
+        </div>
       ) : (
         <div className="ok">{items.length} matches</div>
       )}
-      {items.map((item: Result, i: number) => {
-        return <Item key={item.id} active={i === cursor} item={item} />;
-      })}
+      {/* ///////////////////////////////// */}
+      {items.length ? (
+        <div className="result" data-testid="items-list">
+          {items.map((item: Result, i: number) => {
+            return <Item key={i} active={i === cursor} item={item} />;
+          })}
+        </div>
+      ) : null}
     </ItemsContainer>
   );
 };

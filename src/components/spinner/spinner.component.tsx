@@ -4,7 +4,7 @@ import { RiLoaderLine } from "react-icons/ri";
 
 const Spinner = () => {
   return (
-    <SpinnerContainer>
+    <SpinnerContainer data-testid="spinner">
       <RiLoaderLine />
     </SpinnerContainer>
   );

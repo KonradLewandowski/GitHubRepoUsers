@@ -2,14 +2,14 @@ import styled from "styled-components";
 
 export const SpinnerContainer = styled.div`
   color: #31cc23;
-  display: flex;
+  display: grid;
   justify-content: center;
   font-size: 4rem;
   position: absolute;
-  left: calc(45%);
-  transform: translateX(-50%);
-  top: 35%;
-  z-index: 3;
+  left: 50%;
+  right: 50%;
+  top: 40%;
+  z-index: 2;
   animation: rotation 1.2s infinite linear;
 
   @keyframes rotation {
