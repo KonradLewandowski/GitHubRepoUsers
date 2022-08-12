@@ -4,7 +4,15 @@ import { Result } from "../../interfaces/Service";
 
 import { ItemContainer } from "./item.styles";
 
-const Item = ({ item, active }: { item: Result; active: boolean }) => {
+const Item = ({
+  item,
+  active,
+  index,
+}: {
+  item: Result;
+  active: boolean;
+  index: number;
+}) => {
   return (
     <ItemContainer
       className={active ? "active" : ""}
@@ -13,7 +21,7 @@ const Item = ({ item, active }: { item: Result; active: boolean }) => {
         e.key === "Enter" ? window.open(item.url, "_blank") : null
       }
       tabIndex={active ? 0 : null}
-      data-testid="item-element"
+      data-testid={`item-element-${index}`}
     >
       {item.name}
     </ItemContainer>

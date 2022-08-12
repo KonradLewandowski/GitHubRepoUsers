@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import Autocomplete from "../autocomplete";
 
@@ -43,7 +44,7 @@ it("if API responses should render resault box", async () => {
 
   fireEvent.change(input, { target: { value: "abc" } });
 
-  const result = await screen.findByTestId("item-element");
+  const result = await screen.findByTestId("item-element-0");
   expect(result).toBeInTheDocument();
 });
 
@@ -87,6 +88,52 @@ it("if API responsed should be limited to 50 results per request", async () => {
   expect(childNodes).toBeLessThan(51);
 });
 
+it("if user click Arrow Down the class is changing", async () => {
+  window.open = jest.fn();
+
+  const serviceMock = jest.fn();
+
+  serviceMock.mockReturnValueOnce(
+    Promise.resolve(new Array(2).fill({ id: 1, name: "abcd", url: "" }))
+  );
+
+  render(<Autocomplete gitHubSearchService={serviceMock} />);
+
+  const input = screen.getByPlaceholderText("search");
+
+  fireEvent.change(input, { target: { value: "abc" } });
+
+  const itemElement0 = await screen.findByTestId("item-element-0");
+  const itemElement1 = await screen.findByTestId("item-element-1");
+
+  userEvent.type(itemElement0, "{arrowdown}");
+
+  expect(itemElement1).toHaveClass("active");
+});
+
+it("if user click Arrow Up the class is changing", async () => {
+  window.open = jest.fn();
+
+  const serviceMock = jest.fn();
+
+  serviceMock.mockReturnValueOnce(
+    Promise.resolve(new Array(3).fill({ id: 1, name: "abcd", url: "" }))
+  );
+
+  render(<Autocomplete gitHubSearchService={serviceMock} />);
+
+  const input = screen.getByPlaceholderText("search");
+
+  fireEvent.change(input, { target: { value: "abc" } });
+
+  const itemElement0 = await screen.findByTestId("item-element-0");
+  const itemElement1 = await screen.findByTestId("item-element-1");
+
+  userEvent.type(itemElement1, "{arrowup}");
+
+  expect(itemElement0).toHaveClass("active");
+});
+
 it("if data being fetched render Spinner Component", async () => {
   const serviceMock = jest.fn();
   serviceMock.mockReturnValueOnce(new Promise(() => {}));
@@ -102,9 +149,25 @@ it("if data being fetched render Spinner Component", async () => {
   expect(spinner).toBeInTheDocument();
 });
 
+it("if API responses should show matches found", async () => {
+  const serviceMock = jest.fn();
+  serviceMock.mockReturnValueOnce(
+    Promise.resolve(new Array(10).fill({ id: 1, name: "abcd", url: "" }))
+  );
+
+  render(<Autocomplete gitHubSearchService={serviceMock} />);
+
+  const input = screen.getByPlaceholderText("search");
+
+  fireEvent.change(input, { target: { value: "abc" } });
+
+  const maches = await screen.findByTestId("ok-message");
+
+  await waitFor(() => expect(maches.textContent).toEqual("10 matches"));
+});
+
 it("if API does not response should throw an error", async () => {
   const serviceMock = jest.fn();
-  //   serviceMock.mockReturnValueOnce(Promise.resolve(throw new Error));
   serviceMock.mockRejectedValueOnce(new Error("Something went wrong!"));
   render(<Autocomplete gitHubSearchService={serviceMock} />);
 

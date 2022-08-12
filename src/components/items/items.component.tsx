@@ -47,13 +47,14 @@ const Items = ({ items, isError }: { items: Result[]; isError: boolean }) => {
           Something went wrong!
         </div>
       ) : (
-        <div className="ok">{items.length} matches</div>
+        <div data-testid="ok-message" className="ok">
+          {items.length} matches
+        </div>
       )}
-      {/* ///////////////////////////////// */}
       {items.length ? (
         <div className="result" data-testid="items-list">
           {items.map((item: Result, i: number) => {
-            return <Item key={i} active={i === cursor} item={item} />;
+            return <Item key={i} active={i === cursor} item={item} index={i} />;
           })}
         </div>
       ) : null}
