@@ -1,4 +1,4 @@
-# Getting Started with Recruitment Task
+# Getting Started with GitHubUsers
 
 Before you start install all dependencies: `npm install` in your terminal.
 
